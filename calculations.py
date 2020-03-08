@@ -22,8 +22,8 @@ def generate_OD_plot(pandas_df, reactorname):
         ax.set_xlabel("x label")
         ax.set_ylabel("y label")
         pandas_df = pandas_df[pandas_df['OD'] != 0]
-        pandas_df.groupby("group")['OD600'].plot(x='Time (min)', y='ln(OD600)', ax=ax, legend=True, title="title")
-        fig.savefig(reactorname+'_LNOD600')
+        pandas_df.groupby("group")['OD'].plot(x='Time (min)', y='ln(OD600)', ax=ax, legend=True, title="title")
+        fig.savefig(reactorname+'_OD600')
 
 def generate_LN_plot(pandas_df, reactorname):
         fig, ax = plt.subplots()
