@@ -1,58 +1,61 @@
 import numpy as np
 from numpy import genfromtxt
 import os
-from calculations import pandas_array
+from calculations import pandas_array, find_baseline
+
 
 class Bioreactor:
     '''
     The entire bioreactor including 4 subreactors
     '''
 
-    def __init__(self, reactornumber, data = None):
-        self.reactornumber = reactornumber
+    def __init__(self, reactorname, directory, data = None):
+        self.reactorname = reactorname
         self.data = data
+        self.directory = directory
     
     def set_data(self):
-        textfilepath = input("enter file directory: ").replace("\\", "/")
-        filename = input("enter file name (including .txt)")
-        os.chdir(textfilepath)
-        self.data = genfromtxt(filename, delimiter=',')
+        os.chdir(self.directory)
+        self.data = genfromtxt(self.reactorname+'.txt', delimiter=',')
         return self.data
 
     def make_subreactor(self):
-            if np.all(self.data) == None:
-                self.set_data()
-            else:
-                time_column = 0
-                reactorA_column = 5
-                reactorB_column = 6
-                reactorC_column = 7
-                reactorD_column = 8
-                time_in_min = (self.data[1:, time_column]*60).reshape(-1,1)
+            time_column = 0
+            reactorA_column = 5
+            reactorB_column = 6
+            reactorC_column = 7
+            reactorD_column = 8
+            time_in_min = (self.data[1:, time_column]*60).reshape(-1,1)
 
-                subreactorA = self.data[1:, reactorA_column].reshape(-1,1)
-                subreactorA = np.concatenate((time_in_min, subreactorA), axis=1)
+            subreactorA = self.data[1:, reactorA_column].reshape(-1,1)
+            subreactorA = np.concatenate((time_in_min, subreactorA), axis=1)
+            subreactorA_baseline = find_baseline(subreactorA)
+            subreactorA[0:,1] = np.subtract(subreactorA[0:,1], subreactorA_baseline)
 
-                subreactorB = self.data[1:, reactorB_column].reshape(-1,1)
-                subreactorB = np.concatenate((time_in_min, subreactorB), axis=1)
+            subreactorB = self.data[1:, reactorB_column].reshape(-1,1)
+            subreactorB = np.concatenate((time_in_min, subreactorB), axis=1)
+            subreactorB_baseline = find_baseline(subreactorB)
+            subreactorB[0:,1] = np.subtract(subreactorB[0:,1], subreactorB_baseline)
 
-                subreactorC = self.data[1:, reactorC_column].reshape(-1,1)
-                subreactorC = np.concatenate((time_in_min, subreactorC), axis=1)
+            subreactorC = self.data[1:, reactorC_column].reshape(-1,1)
+            subreactorC = np.concatenate((time_in_min, subreactorC), axis=1)
+            subreactorC_baseline = find_baseline(subreactorC)
+            subreactorC[0:,1] = np.subtract(subreactorC[0:,1], subreactorC_baseline)
 
-                subreactorD = self.data[1:, reactorD_column].reshape(-1,1)
-                subreactorD = np.concatenate((time_in_min, subreactorD), axis=1)
+            subreactorD = self.data[1:, reactorD_column].reshape(-1,1)
+            subreactorD = np.concatenate((time_in_min, subreactorD), axis=1)
+            subreactorD_baseline = find_baseline(subreactorD)
+            subreactorD[0:,1] = np.subtract(subreactorD[0:,1], subreactorD_baseline)
 
-                return [subreactorA, subreactorB, subreactorC, subreactorD]
+            return [subreactorA, subreactorB, subreactorC, subreactorD]
 
 
     def pandas_subreactor(self):
         reactor_list = self.make_subreactor()
+        reactor_names = ["reactorA", "reactorB", "reactorC", "reactorD"]
         pandas_list = []
         for i in range(0,4):
             pandas_list.append(pandas_array(reactor_list[i]))
+            pandas_list[i].insert(3, "group", reactor_names[i])
         return pandas_list
 
-reactor = Bioreactor('1.02')
-reactor.set_data()
-reactor.make_subreactor()
-pandasreactor = reactor.pandas_subreactor()
