@@ -1,8 +1,9 @@
 import os
 import pandas as pd
+import numpy as np
 import matplotlib.pyplot as plt
 from models import Bioreactor
-from calculations import pandas_array, generate_OD_plot, generate_LN_plot
+from calculations import pandas_array, generate_OD_plot, generate_LN_plot, calculate_growthrate
 
 ##generate input file list
 directory = (input("enter file directory: ").replace("\\", "/"))
@@ -14,13 +15,20 @@ for files in entries:
         reactorname = files.split(sep=".")[0]
         reactor = Bioreactor(reactorname, directory)
         reactor.set_data()
-        pandasreactor = reactor.pandas_subreactor()
+        pandasreactor = reactor.pandas_reactor()
         pandas_df = pd.concat(pandasreactor)
+        ##save pandas df
+        pandas_df.to_csv(f'./{reactorname}_dataframe.csv', index = False)
         #Generate plots
         generate_OD_plot(pandas_df, reactorname)
         generate_LN_plot(pandas_df, reactorname)
+        ##calculate growth rates
+        growth_rates= calculate_growthrate(pandasreactor, reactorname, reactor.subreactor_names)
+        growth_rate_frame= {'Subreactor':  reactor.subreactor_names,'Growth Rates': growth_rates}
+        growth_rate_df = pd.DataFrame.from_dict(growth_rate_frame)
+        growth_rate_df['Doubling_time(min)'] = np.log(2)/growth_rate_df['Growth Rates']
+        growth_rate_df.to_csv(f'./{reactorname}_growthrates.csv', index = False)
         
-    
 
 
 

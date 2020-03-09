@@ -1,6 +1,6 @@
+import os
 import numpy as np
 from numpy import genfromtxt
-import os
 from calculations import pandas_array, find_baseline
 
 
@@ -8,6 +8,7 @@ class Bioreactor:
     '''
     The entire bioreactor including 4 subreactors
     '''
+    subreactor_names = ["reactorA", "reactorB", "reactorC", "reactorD"]
 
     def __init__(self, reactorname, directory, data = None):
         self.reactorname = reactorname
@@ -49,13 +50,12 @@ class Bioreactor:
 
             return [subreactorA, subreactorB, subreactorC, subreactorD]
 
-
-    def pandas_subreactor(self):
+    def pandas_reactor(self):
         reactor_list = self.make_subreactor()
-        reactor_names = ["reactorA", "reactorB", "reactorC", "reactorD"]
+        self.subreactor_names = self.subreactor_names
         pandas_list = []
         for i in range(0,4):
             pandas_list.append(pandas_array(reactor_list[i]))
-            pandas_list[i].insert(3, "group", reactor_names[i])
+            pandas_list[i].insert(3, "group", self.subreactor_names[i])
         return pandas_list
 
