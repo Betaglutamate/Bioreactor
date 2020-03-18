@@ -22,10 +22,10 @@ class Bioreactor:
 
     def make_subreactor(self):
             time_column = 0
-            reactorA_column = 5
-            reactorB_column = 6
-            reactorC_column = 7
-            reactorD_column = 8
+            reactorA_column = 49
+            reactorB_column = 50
+            reactorC_column = 51
+            reactorD_column = 52
             time_in_min = (self.data[1:, time_column]*60).reshape(-1,1)
 
             subreactorA = self.data[1:, reactorA_column].reshape(-1,1)
