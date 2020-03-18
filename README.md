@@ -6,6 +6,7 @@
 2. if an OD value is lower than the OD value two reads previously the program will only discard any following values for calculation of growth rates.
 3. only .txt files are analysed
 4. the columns which contain the OD values for the bioreactor are hardcoded
+5. OD for growth rate calculation is measured between 0.1 and 0.4
 
 ## dependencies
 1. numpy
