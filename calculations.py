@@ -60,7 +60,7 @@ def calculate_growthrate(pandasreactor, reactorname, subreactor_name):
         growth_rate = (linear_regressor.coef_)[0][0]
         growth_rates.append(growth_rate)
 
-        plt.rc('axes', prop_cycle=(cycler('color', ['r', 'g', 'b', 'y'])))
+        plt.rc('axes', prop_cycle=(cycler('color', ['tab:blue', 'tab:orange', 'tab:green', 'tab:red'])))
         plt.scatter(X, Y, label=name_of_reactor)
         plt.plot(X, Y_pred)
         
