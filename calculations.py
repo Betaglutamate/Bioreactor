@@ -46,7 +46,7 @@ def calculate_growthrate(pandasreactor, reactorname, subreactor_name):
         current_reactor_growthrate = current_reactor[(current_reactor['OD'] > 0.1) & (current_reactor['OD'] <0.4)]
         finaltime_list = []
         for i in range(0,len(current_reactor_growthrate['OD'])-2):
-                if current_reactor_growthrate['OD'].values[i+2] < current_reactor_growthrate['OD'].values[i]:
+                if current_reactor_growthrate['OD'].values[i+2] <= current_reactor_growthrate['OD'].values[i]:
                      finaltime_list.append(i)
         if len(finaltime_list) != 0:
             finaltime = np.min(finaltime_list)
