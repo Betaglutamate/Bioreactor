@@ -1,4 +1,5 @@
 import numpy as np
+import math
 import pandas as pd
 import matplotlib.pyplot as plt
 from sklearn.linear_model import LinearRegression
@@ -7,6 +8,17 @@ from cycler import cycler
 def find_baseline(array):
     baseline = np.average(array[0:10,1])
     return baseline
+
+def align_array(array):
+    values = array['ln(OD600)']
+    bool_vector = [bool(value) if not math.isnan(value) else False for value in values]
+    bool_vector = pd.Series(bool_vector, name='bools')
+    allign_df = array[bool_vector]
+    time_zero = allign_df['Time (min)'].values[0]
+    allign_df = allign_df.assign(
+    new_time = lambda dataframe: dataframe['Time (min)'].map(lambda Time: Time - time_zero) 
+    )
+    return allign_df
 
 def pandas_array(array):
     baseline = find_baseline(array)
@@ -17,25 +29,32 @@ def pandas_array(array):
     log_array = np.insert(log_array, [0]*(lastzero+1), np.nan, axis=None)
     pandasOD = np.concatenate((array, log_array.reshape(-1,1)), axis=1)
     pandas_array = pd.DataFrame(pandasOD, columns=(["Time (min)", "OD", "ln(OD600)"]))
+    pandas_array = align_array(pandas_array)
     return pandas_array
 
 def generate_OD_plot(pandas_df, reactorname):
-        fig, ax = plt.subplots()
-        ax.set_xlabel("Time (min)")
-        ax.set_ylabel(r'$OD_{[600]}$')
-        pandas_df = pandas_df[pandas_df['OD'] != 0]
-        pandas_df.groupby("group")['OD'].plot(x='Time (min)', y='ln(OD600)', ax=ax, legend=True, title=reactorname+'_OD600')
-        fig.savefig(reactorname+'_OD600')
-        plt.close()
+    pandas_df = pandas_df[pandas_df['OD'] != 0]
+    pandas_df.set_index('new_time', inplace=True)
+
+    fig, ax = plt.subplots()
+    pandas_df.groupby("group")['OD'].plot(ax=ax, legend=True, title=reactorname+'_OD600')
+    ax.set_xlabel("Time (min)")
+    ax.set_ylabel(r'$OD_{[600]}$')
+    ax.set_xlim(0,500)
+    fig.savefig(reactorname+'_OD600')
+    plt.close()
 
 def generate_LN_plot(pandas_df, reactorname):
-        fig, ax = plt.subplots()
-        ax.set_xlabel("Time (min)")
-        ax.set_ylabel(r'$ln(OD_{[600]})$')
-        # pandas_df = pandas_df[pandas_df['ln(OD600)'] != 0]
-        pandas_df.groupby("group")['ln(OD600)'].plot(x='Time (min)', y='ln(OD600)', ax=ax, legend=True, title=reactorname+'_ln_OD600')
-        fig.savefig(reactorname+'_ln_OD600')
-        plt.close()
+    pandas_df = pandas_df[pandas_df['OD'] != 0]
+    pandas_df.set_index('new_time', inplace=True)
+
+    fig, ax = plt.subplots()
+    pandas_df.groupby("group")['ln(OD600)'].plot(ax=ax, legend=True, title=reactorname+'_ln_OD600')
+    ax.set_xlabel("Time (min)")
+    ax.set_ylabel(r'$ln(OD_{[600]})$')
+    ax.set_xlim(0,500)
+    fig.savefig(reactorname+'_ln_OD600')
+    plt.close()
 
 
 def calculate_growthrate(pandasreactor, reactorname, subreactor_name):
@@ -76,4 +95,5 @@ def calculate_growthrate(pandasreactor, reactorname, subreactor_name):
 
 def calculate_doubling_time(row):
     np.log(2)/row
+
 

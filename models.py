@@ -56,6 +56,6 @@ class Bioreactor:
         pandas_list = []
         for i in range(0,4):
             pandas_list.append(pandas_array(reactor_list[i]))
-            pandas_list[i].insert(3, "group", self.subreactor_names[i])
+            pandas_list[i].insert(4, "group", self.subreactor_names[i])
         return pandas_list
 
