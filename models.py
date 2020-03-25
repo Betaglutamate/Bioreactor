@@ -5,9 +5,9 @@ from calculations import pandas_array, find_baseline
 
 
 class Bioreactor:
-    '''
-    The entire bioreactor including 4 subreactors
-    '''
+    
+    '''The entire bioreactor with associated data.'''
+
     subreactor_names = ["reactorA", "reactorB", "reactorC", "reactorD"]
 
     def __init__(self, reactorname, directory, data = None):

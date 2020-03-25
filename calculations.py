@@ -79,7 +79,7 @@ def calculate_growthrate(pandasreactor, reactorname, subreactor_name):
             current_reactor_growthrate = current_reactor_growthrate[0:finaltime]
 
         #here is the actual modelling
-        X = current_reactor_growthrate.get('Time (min)').values.reshape(-1, 1)  # values converts it into a numpy array
+        X = current_reactor_growthrate.get('new_time').values.reshape(-1, 1)  # values converts it into a numpy array
         Y = current_reactor_growthrate.get('ln(OD600)').values.reshape(-1, 1)  # -1 means that calculate the dimension of rows, but have 1 column
         linear_regressor = LinearRegression()  # create object for the class
         linear_regressor.fit(X, Y)  # perform linear regression

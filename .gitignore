@@ -3,3 +3,5 @@ __pycache__/models.cpython-37.pyc
 __pycache__/calculations.cpython-37.pyc
 *.pyc
 Example_file/testfile_dataframe_manual.csv
+*.csv
+*.png
