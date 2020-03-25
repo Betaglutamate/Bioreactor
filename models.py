@@ -20,6 +20,7 @@ class Bioreactor:
         self.data = genfromtxt(self.reactorname+'.txt', delimiter=',')
         return self.data
 
+    #construct subreactor out of raw .txt file here. Reactor columns need to be filled with OD values
     def make_subreactor(self):
             time_column = 0
             reactorA_column = 49
@@ -50,12 +51,17 @@ class Bioreactor:
 
             return [subreactorA, subreactorB, subreactorC, subreactorD]
 
+    #make pandas tables of subreactors return a 2 lists each containing 4 reactors
     def pandas_reactor(self):
         reactor_list = self.make_subreactor()
         self.subreactor_names = self.subreactor_names
         pandas_list = []
+        pandas_df_list = []
         for i in range(0,4):
-            pandas_list.append(pandas_array(reactor_list[i]))
+            append_df, append_pandas = pandas_array(reactor_list[i])
+            pandas_list.append(append_pandas)
             pandas_list[i].insert(4, "group", self.subreactor_names[i])
-        return pandas_list
+            pandas_df_list.append(append_df)
+            pandas_df_list[i].insert(3, "group", self.subreactor_names[i])
+        return pandas_list, pandas_df_list
 
