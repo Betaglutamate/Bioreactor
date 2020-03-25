@@ -10,15 +10,17 @@ directory = (input("enter file directory: ").replace("\\", "/"))
 entries = os.listdir(directory)
 print(directory)
 
+##loop over txt files in subdirectory and generate tables and plots for each txt file
 for files in entries:
     if ".TXT" in files:
         reactorname = files.split(sep=".")[0]
         reactor = Bioreactor(reactorname, directory)
         reactor.set_data()
-        pandasreactor = reactor.pandas_reactor()
+        pandasreactor, raw_pandas_df = reactor.pandas_reactor()
         pandas_df = pd.concat(pandasreactor)
+        raw_pandas_df= pd.concat(raw_pandas_df)
         ##save pandas df
-        pandas_df.to_csv(f'./{reactorname}_dataframe.csv', index = False)
+        raw_pandas_df.to_csv(f'./{reactorname}_dataframe.csv', index = False)
         #Generate plots
         generate_OD_plot(pandas_df, reactorname)
         generate_LN_plot(pandas_df, reactorname)
