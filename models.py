@@ -9,6 +9,7 @@ class Bioreactor:
     '''The entire bioreactor with associated data.'''
 
     subreactor_names = ["reactorA", "reactorB", "reactorC", "reactorD"]
+    allignment_od = 0.1
 
     def __init__(self, reactorname, directory, data = None):
         self.reactorname = reactorname
@@ -58,7 +59,7 @@ class Bioreactor:
         pandas_list = []
         pandas_df_list = []
         for i in range(0,4):
-            append_df, append_pandas = pandas_array(reactor_list[i])
+            append_df, append_pandas = pandas_array(reactor_list[i], self.allignment_od)
             pandas_list.append(append_pandas)
             pandas_list[i].insert(4, "group", self.subreactor_names[i])
             pandas_df_list.append(append_df)
