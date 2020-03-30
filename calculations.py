@@ -11,7 +11,7 @@ def find_baseline(array):
     baseline = np.average(array[0:10,1])
     return baseline
 
-#
+
 def align_array(array, allignment_OD):
     '''function takes array from pandas_array() and aligns it to a certain ln(OD600 value) given as bool vector.'''
     values = array['ln(OD600)']
@@ -22,6 +22,9 @@ def align_array(array, allignment_OD):
     allign_df = allign_df.assign(
     new_time = lambda dataframe: dataframe['Time (min)'].map(lambda Time: Time - time_zero)
     )#align df.assign is special pandas funcion that works like mutate in r
+    perfect_allign_OD = allign_df['OD'].values[0] - allignment_OD
+    allign_df['OD'] = allign_df['OD']-perfect_allign_OD
+    
     return allign_df
 
 
@@ -67,13 +70,13 @@ def generate_LN_plot(pandas_df, reactorname):
     fig.savefig(reactorname+'_ln_OD600')
     plt.close()
 
-def calculate_growthrate(pandasreactor, reactorname, subreactor_name):
+def calculate_growthrate(pandasreactor, reactorname, subreactor_name, allignment_OD):
     '''This function takes ln(OD) between two if statements stored in current_reactor_growthrate'''
     growth_rates = []
     for i in range(0,4):
         name_of_reactor = subreactor_name[i]
         current_reactor = pandasreactor[i]
-        current_reactor_growthrate = current_reactor[(current_reactor['OD'] > 0.1) & (current_reactor['OD'] <0.4)]
+        current_reactor_growthrate = current_reactor[(current_reactor['OD'] >= allignment_OD) & (current_reactor['OD'] <0.4)]
         finaltime_list = []
         #this loop checks that the growth rate is +ve if growth rate turns negative over two measurements it is terminated
         for i in range(0,len(current_reactor_growthrate['OD'])-2):

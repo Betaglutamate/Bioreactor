@@ -61,8 +61,8 @@ class Bioreactor:
         for i in range(0,4):
             append_df, append_pandas = pandas_array(reactor_list[i], self.allignment_od)
             pandas_list.append(append_pandas)
-            pandas_list[i].insert(4, "group", self.subreactor_names[i])
+            pandas_list[i].insert(3, "group", self.subreactor_names[i])
             pandas_df_list.append(append_df)
-            pandas_df_list[i].insert(3, "group", self.subreactor_names[i])
+            pandas_df_list[i].insert(2, "group", self.subreactor_names[i])
         return pandas_list, pandas_df_list
 

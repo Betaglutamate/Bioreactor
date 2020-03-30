@@ -25,7 +25,7 @@ for files in entries:
         generate_OD_plot(pandas_df, reactorname)
         generate_LN_plot(pandas_df, reactorname)
         ##calculate growth rates
-        growth_rates= calculate_growthrate(pandasreactor, reactorname, reactor.subreactor_names)
+        growth_rates= calculate_growthrate(pandasreactor, reactorname, reactor.subreactor_names, reactor.allignment_od)
         growth_rate_frame= {'Subreactor':  reactor.subreactor_names,'Growth Rates': growth_rates}
         growth_rate_df = pd.DataFrame.from_dict(growth_rate_frame)
         growth_rate_df['Doubling_time(min)'] = np.log(2)/growth_rate_df['Growth Rates']
