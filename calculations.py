@@ -22,8 +22,10 @@ def align_array(array, allignment_OD):
     allign_df = allign_df.assign(
     new_time = lambda dataframe: dataframe['Time (min)'].map(lambda Time: Time - time_zero)
     )#align df.assign is special pandas funcion that works like mutate in r
-    perfect_allign_OD = allign_df['OD'].values[0] - allignment_OD
-    allign_df['OD'] = allign_df['OD']-perfect_allign_OD
+    # perfect_allign_OD = allign_df['ln(OD600)'].values[0] - np.log(allignment_OD)
+    # allign_df['ln(OD600)'] = allign_df['ln(OD600)']-perfect_allign_OD
+    # allign_df['OD'] = [math.exp(a) for a in allign_df['ln(OD600)'].values]
+    
     
     return allign_df
 
