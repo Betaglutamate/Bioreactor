@@ -26,7 +26,6 @@ def align_array(array, allignment_OD):
     # allign_df['ln(OD600)'] = allign_df['ln(OD600)']-perfect_allign_OD
     # allign_df['OD'] = [math.exp(a) for a in allign_df['ln(OD600)'].values]
     
-    
     return allign_df
 
 
@@ -42,6 +41,10 @@ def pandas_array(array, allignment_OD):
     pandasOD = np.concatenate((array, log_array.reshape(-1,1)), axis=1)
     pandas_array = pd.DataFrame(pandasOD, columns=(["Time (min)", "OD", "ln(OD600)"]))
     pandas_array_align = align_array(pandas_array, allignment_OD)
+    pandas_array_align_baseline = np.log(pandas_array_align['OD'].values[0])
+    pandas_array_align = pandas_array_align.assign(
+    align_lnOD = lambda dataframe: dataframe['OD'].map(lambda OD: np.log(OD) - pandas_array_align_baseline)
+    )
     return pandas_array, pandas_array_align
 
 
@@ -65,7 +68,7 @@ def generate_LN_plot(pandas_df, reactorname):
     pandas_df.set_index('new_time', inplace=True)
 
     fig, ax = plt.subplots()
-    pandas_df.groupby("group")['ln(OD600)'].plot(ax=ax, legend=True, title=reactorname+'_ln_OD600')
+    pandas_df.groupby("group")['align_lnOD'].plot(ax=ax, legend=True, title=reactorname+'_ln_OD600')
     ax.set_xlabel("Time (min)")
     ax.set_ylabel(r'$ln(OD_{[600]})$')
     ax.set_xlim(0,500)
@@ -90,7 +93,7 @@ def calculate_growthrate(pandasreactor, reactorname, subreactor_name, allignment
 
         #here is the actual modelling
         X = current_reactor_growthrate.get('new_time').values.reshape(-1, 1)  # values converts it into a numpy array
-        Y = current_reactor_growthrate.get('ln(OD600)').values.reshape(-1, 1)  # -1 means that calculate the dimension of rows, but have 1 column
+        Y = current_reactor_growthrate.get('align_lnOD').values.reshape(-1, 1)  # -1 means that calculate the dimension of rows, but have 1 column
         linear_regressor = LinearRegression()  # create object for the class
         linear_regressor.fit(X, Y)  # perform linear regression
         Y_pred = linear_regressor.predict(X)  # make predictions
