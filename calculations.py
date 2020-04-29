@@ -76,7 +76,9 @@ def generate_LN_plot(pandas_df, reactorname):
     plt.close()
 
 def calculate_growthrate(pandasreactor, reactorname, subreactor_name, allignment_OD):
-    '''This function takes ln(OD) between two if statements stored in current_reactor_growthrate'''
+    '''This function takes ln(OD) between two if statements stored in current_reactor_growthrate
+        For easier modification I added lowerOD and upperOD which are the values that are used for the linear regression   
+    '''
     lowerOD = allignment_OD
     upperOD = 0.3
     growth_rates = []
