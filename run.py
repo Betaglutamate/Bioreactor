@@ -12,7 +12,7 @@ print(directory)
 
 ##loop over txt files in subdirectory and generate tables and plots for each txt file
 for files in entries:
-    if ".TXT" in files:
+    if ".txt" in files:
         reactorname = files.split(sep=".")[0]
         reactor = Bioreactor(reactorname, directory)
         reactor.set_data()

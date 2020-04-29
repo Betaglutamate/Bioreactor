@@ -77,11 +77,13 @@ def generate_LN_plot(pandas_df, reactorname):
 
 def calculate_growthrate(pandasreactor, reactorname, subreactor_name, allignment_OD):
     '''This function takes ln(OD) between two if statements stored in current_reactor_growthrate'''
+    lowerOD = allignment_OD
+    upperOD = 0.3
     growth_rates = []
     for i in range(0,4):
         name_of_reactor = subreactor_name[i]
         current_reactor = pandasreactor[i]
-        current_reactor_growthrate = current_reactor[(current_reactor['OD'] >= allignment_OD) & (current_reactor['OD'] <0.4)]
+        current_reactor_growthrate = current_reactor[(current_reactor['OD'] >= lowerOD) & (current_reactor['OD'] <upperOD)]
         finaltime_list = []
         #this loop checks that the growth rate is +ve if growth rate turns negative over two measurements it is terminated
         for i in range(0,len(current_reactor_growthrate['OD'])-2):
