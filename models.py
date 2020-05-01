@@ -22,7 +22,7 @@ class Bioreactor:
         return self.data
 
     #construct subreactor out of raw .txt file here. Reactor columns need to be filled with OD values
-    def make_subreactor(self):
+    def _make_subreactor(self):
             time_column = 0
             reactorA_column = 49
             reactorB_column = 50
@@ -54,7 +54,7 @@ class Bioreactor:
 
     #make pandas tables of subreactors return a 2 lists each containing 4 reactors
     def pandas_reactor(self):
-        reactor_list = self.make_subreactor()
+        reactor_list = self._make_subreactor()
         self.subreactor_names = self.subreactor_names
         pandas_list = []
         pandas_df_list = []
