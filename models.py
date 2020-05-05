@@ -23,12 +23,12 @@ class Bioreactor:
 
     #construct subreactor out of raw .txt file here. Reactor columns need to be filled with OD values
     def _make_subreactor(self):
-            time_column = 0
-            reactorA_column = 49
-            reactorB_column = 50
-            reactorC_column = 51
-            reactorD_column = 52
-            time_in_min = (self.data[1:, time_column]*60).reshape(-1,1)
+        time_column = 0
+        reactorA_column = 49
+        reactorB_column = 50
+        reactorC_column = 51
+        reactorD_column = 52
+        time_in_min = (self.data[1:, time_column]*60).reshape(-1,1)
 
         subreactorA = self.data[1:, reactorA_column].reshape(-1, 1)
         subreactorA = np.concatenate((time_in_min, subreactorA), axis=1)
