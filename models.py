@@ -18,17 +18,18 @@ class Bioreactor:
 
     def set_data(self):
         os.chdir(self.directory)
-        self.data = genfromtxt(self.reactorname+'.txt', delimiter=',')
+        self.data = genfromtxt(self.reactorname + '.txt', delimiter=',')
         return self.data
 
-    #construct subreactor out of raw .txt file here. Reactor columns need to be filled with OD values
+    # construct subreactor out of raw .txt file here. Reactor columns need to
+    # be filled with OD values
     def _make_subreactor(self):
-            time_column = 0
-            reactorA_column = 49
-            reactorB_column = 50
-            reactorC_column = 51
-            reactorD_column = 52
-            time_in_min = (self.data[1:, time_column]*60).reshape(-1,1)
+        time_column = 0
+        reactorA_column = 49
+        reactorB_column = 50
+        reactorC_column = 51
+        reactorD_column = 52
+        time_in_min = (self.data[1:, time_column] * 60).reshape(-1, 1)
 
         subreactorA = self.data[1:, reactorA_column].reshape(-1, 1)
         subreactorA = np.concatenate((time_in_min, subreactorA), axis=1)
@@ -56,7 +57,8 @@ class Bioreactor:
 
         return [subreactorA, subreactorB, subreactorC, subreactorD]
 
-    # make pandas tables of subreactors return a 2 lists each containing 4 reactors
+    # make pandas tables of subreactors return a 2 lists each containing 4
+    # reactors
     def pandas_reactor(self):
         reactor_list = self._make_subreactor()
         self.subreactor_names = self.subreactor_names
