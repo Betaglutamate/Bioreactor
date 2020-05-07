@@ -16,7 +16,7 @@ def align_array(array, allignment_OD):
     '''function takes array from pandas_array() and aligns it to a certain ln(OD600 value) given as bool vector.'''
     values = array['ln(OD600)']
     bool_vector = [bool(value) if value > np.log(
-        allignment_OD) else False for value in values]
+        allignment_OD[0]) else False for value in values]
     bool_vector = pd.Series(bool_vector, name='bools')
     allign_df = array[bool_vector]
     time_zero = allign_df['Time (min)'].values[0]
@@ -61,8 +61,8 @@ def calculate_growthrate(
     '''This function takes ln(OD) between two if statements stored in current_reactor_growthrate
         For easier modification I added lowerOD and upperOD which are the values that are used for the linear regression
     '''
-    lowerOD = allignment_OD
-    upperOD = 0.3
+    lowerOD = allignment_OD[0]
+    upperOD = allignment_OD[1]
     growth_rates = []
 
     fig, (ax1, ax2, ax3) = plt.subplots(3, figsize=(15, 15))
@@ -83,7 +83,7 @@ def calculate_growthrate(
     #ax2.set_xlabel("Time (min)", fontsize = 20)
     ax2.set_ylabel(r'$ln(OD_{[600]})$', fontsize=20)
 
-    for i in range(0, 4):
+    for i in range(0, len(subreactor_name)):
         name_of_reactor = subreactor_name[i]
         current_reactor = pandasreactor[i]
         current_reactor_growthrate = current_reactor[(
@@ -130,7 +130,7 @@ def calculate_growthrate(
         top=0.925,
         wspace=0.2,
         hspace=0.17)
-    fig.savefig(reactorname + 'try')
+    fig.savefig(reactorname + '_Figures')
     plt.close()
 
     return growth_rates

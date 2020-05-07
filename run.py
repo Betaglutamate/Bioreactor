@@ -14,6 +14,7 @@ print(directory)
 # each txt file
 for files in entries:
     if ".txt" in files:
+        print(f"processing file {files}")
         reactorname = files.split(sep=".")[0]
         reactor = Bioreactor(reactorname, directory)
         reactor.set_data()

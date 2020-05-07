@@ -7,7 +7,8 @@
 3. only .txt files are analysed
 4. the columns which contain the OD values for the bioreactor are hardcoded
 5. OD for growth rate calculation is measured between 0.1 and 0.4
-6. All curves are alligned to y=0.1 as the 0 timepoint.
+6. All curves are alligned to 0.1 and 0.4 as the 0 timepoint. This can be changed under models.py allignment OD.
+7. Reactor column can be set to false under models.py if only subset of reactors was run
 
 ## dependencies
 1. numpy
