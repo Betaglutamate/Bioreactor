@@ -37,9 +37,9 @@ def pandas_array(array, allignment_OD):
     baseline = find_baseline(array)
     array[0:, 1] = np.subtract(array[0:, 1], baseline)
     lastzero = np.where(array[0:, 1] <= 0)[0][-1]
-    newOD = array[lastzero+1:, ]
+    newOD = array[lastzero + 1:, ]
     log_array = np.log(newOD[:, 1])
-    log_array = np.insert(log_array, [0]*(lastzero+1), np.nan, axis=None)
+    log_array = np.insert(log_array, [0] * (lastzero + 1), np.nan, axis=None)
     pandasOD = np.concatenate((array, log_array.reshape(-1, 1)), axis=1)
     pandas_array = pd.DataFrame(pandasOD, columns=(
         ["Time (min)", "OD", "ln(OD600)"]))
@@ -52,52 +52,48 @@ def pandas_array(array, allignment_OD):
     return pandas_array, pandas_array_align
 
 
-def generate_OD_plot(pandas_df, reactorname):
-    '''function uses the aligned pandas array and makes a plot'''
-    pandas_df = pandas_df[pandas_df['OD'] != 0]
-    pandas_df.set_index('new_time', inplace=True)
-
-    fig, ax = plt.subplots()
-    pandas_df.groupby("group")['OD'].plot(
-        ax=ax, legend=True, title=reactorname+'_OD600')
-    ax.set_xlabel("Time (min)")
-    ax.set_ylabel(r'$OD_{[600]}$')
-    ax.set_xlim(0, 500)
-    fig.savefig(reactorname+'_OD600')
-    plt.close()
-
-
-def generate_LN_plot(pandas_df, reactorname):
-    '''function uses the aligned pandas array and makes a plot'''
-    pandas_df = pandas_df[pandas_df['OD'] != 0]
-    pandas_df.set_index('new_time', inplace=True)
-
-    fig, ax = plt.subplots()
-    pandas_df.groupby("group")['align_lnOD'].plot(
-        ax=ax, legend=True, title=reactorname+'_ln_OD600')
-    ax.set_xlabel("Time (min)")
-    ax.set_ylabel(r'$ln(OD_{[600]})$')
-    ax.set_xlim(0, 500)
-    fig.savefig(reactorname+'_ln_OD600')
-    plt.close()
-
-
-def calculate_growthrate(pandasreactor, reactorname, subreactor_name, allignment_OD):
+def calculate_growthrate(
+        pandasreactor,
+        raw_pandas_df,
+        reactorname,
+        subreactor_name,
+        allignment_OD):
     '''This function takes ln(OD) between two if statements stored in current_reactor_growthrate
-        For easier modification I added lowerOD and upperOD which are the values that are used for the linear regression   
+        For easier modification I added lowerOD and upperOD which are the values that are used for the linear regression
     '''
     lowerOD = allignment_OD
     upperOD = 0.3
     growth_rates = []
+
+    fig, (ax1, ax2, ax3) = plt.subplots(3, figsize=(15, 15))
+    fig.suptitle(reactorname + '_OD600', fontsize=40)
+    plt.xticks(fontsize=20)
+    plt.yticks(fontsize=20)
+    x_axis1 = ax1.xaxis
+    x_axis2 = ax2.xaxis
+    x_axis1.label.set_visible(False)
+    x_axis2.label.set_visible(False)
+
+    raw_pandas_df.set_index('Time (min)').groupby("group")['OD'].plot(
+        ax=ax1, legend=False, fontsize=16)
+    #ax1.set_xlabel("Time (min)", fontsize = 20)
+    ax1.set_ylabel(r'$OD_{[600]}$', fontsize=20)
+    raw_pandas_df.set_index('Time (min)').groupby("group")['ln(OD600)'].plot(
+        ax=ax2, legend=False, fontsize=16)
+    #ax2.set_xlabel("Time (min)", fontsize = 20)
+    ax2.set_ylabel(r'$ln(OD_{[600]})$', fontsize=20)
+
     for i in range(0, 4):
         name_of_reactor = subreactor_name[i]
         current_reactor = pandasreactor[i]
         current_reactor_growthrate = current_reactor[(
             current_reactor['OD'] >= lowerOD) & (current_reactor['OD'] < upperOD)]
         finaltime_list = []
-        # this loop checks that the growth rate is +ve if growth rate turns negative over two measurements it is terminated
-        for i in range(0, len(current_reactor_growthrate['OD'])-2):
-            if current_reactor_growthrate['OD'].values[i+2] <= current_reactor_growthrate['OD'].values[i]:
+        # this loop checks that the growth rate is +ve if growth rate turns
+        # negative over two measurements it is terminated
+        for i in range(0, len(current_reactor_growthrate['OD']) - 2):
+            if current_reactor_growthrate['OD'].values[i +
+                                                       2] <= current_reactor_growthrate['OD'].values[i]:
                 finaltime_list.append(i)
         if len(finaltime_list) != 0:
             finaltime = np.min(finaltime_list)
@@ -114,16 +110,27 @@ def calculate_growthrate(pandasreactor, reactorname, subreactor_name, allignment
         growth_rate = (linear_regressor.coef_)[0][0]
         growth_rates.append(growth_rate)
 
-        plt.rc('axes', prop_cycle=(
-            cycler('color', ['tab:blue', 'tab:orange', 'tab:green', 'tab:red'])))
-        plt.scatter(X, Y, label=name_of_reactor)
-        plt.plot(X, Y_pred)
+        plt.rc(
+            'axes', prop_cycle=(
+                cycler(
+                    'color', [
+                        'tab:blue', 'tab:orange', 'tab:green', 'tab:red'])))
+        ax3.scatter(X, Y, label=name_of_reactor)
+        ax3.plot(X, Y_pred)
 
-    plt.ylabel(r'$ln(OD_{[600]})$')
-    plt.xlabel("Time (min)")
-    plt.legend()
-    plt.title(reactorname+"Logarithmic Growth Rate")
-    plt.savefig(reactorname+'predicted_growthrate')
+    ax3.set_ylabel(r'$ln(OD_{[600]})$', fontsize=20)
+    ax3.set_xlabel("Time (min)", fontsize=20)
+
+    handles, labels = ax1.get_legend_handles_labels()
+    fig.legend(handles, labels, fontsize=20, markerscale=8, loc="center right")
+    plt.subplots_adjust(
+        left=0.09,
+        bottom=0.07,
+        right=0.80,
+        top=0.925,
+        wspace=0.2,
+        hspace=0.17)
+    fig.savefig(reactorname + 'try')
     plt.close()
 
     return growth_rates
@@ -131,4 +138,4 @@ def calculate_growthrate(pandasreactor, reactorname, subreactor_name, allignment
 
 def calculate_doubling_time(row):
     '''function to calculate doubling time'''
-    np.log(2)/row
+    np.log(2) / row
