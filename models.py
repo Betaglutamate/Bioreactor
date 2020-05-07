@@ -31,6 +31,7 @@ class Bioreactor:
         reactorD_column = 52
         time_in_min = (self.data[1:, time_column] * 60).reshape(-1, 1)
 
+
         subreactorA = self.data[1:, reactorA_column].reshape(-1, 1)
         subreactorA = np.concatenate((time_in_min, subreactorA), axis=1)
         subreactorA_baseline = find_baseline(subreactorA)
