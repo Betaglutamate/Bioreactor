@@ -11,11 +11,13 @@
 7. Reactor column can be set to false under models.py if only subset of reactors was run
 
 ## dependencies
+You can now create conda environment by entering the following command:
+conda env create --file bioreactor_env.txt
 1. numpy
 2. pandas
 3. matplotlib
 4. sklearn
-from cycler import cycler
+
 
 # Instalation guide
 1. install python 3.7 or higher (https://www.python.org/downloads/)
