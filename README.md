@@ -12,11 +12,18 @@
 
 ## dependencies
 You can now create conda environment by entering the following command:
-conda env create --file bioreactor_env.txt
+
+`conda env create --file bioreactor_env.yml`
+
+This installs the following packages
+
 1. numpy
 2. pandas
 3. matplotlib
 4. sklearn
+
+to activate environment run
+`conda activate Bioreactor_env`
 
 
 # Instalation guide
@@ -28,4 +35,4 @@ conda env create --file bioreactor_env.txt
     python run.py
 5. you will be asked for the location of your files. You can copy and paste the folder directory path into python.
 6. the program will now execute
-7. Your files will now be generated in the same directory.
+7. Your files will be generated in the same directory.
