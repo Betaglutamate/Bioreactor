@@ -5,3 +5,4 @@ __pycache__/calculations.cpython-37.pyc
 Example_file/testfile_dataframe_manual.csv
 *.csv
 *.png
+*.json
