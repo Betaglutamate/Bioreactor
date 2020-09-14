@@ -36,7 +36,12 @@ def pandas_array(array, allignment_OD):
     It returns two pandas arrays. One array containing the original data and an array that has been aligned'''
     baseline = find_baseline(array)
     array[0:, 1] = np.subtract(array[0:, 1], baseline)
-    lastzero = np.where(array[0:, 1] <= 0)[0][-1]
+    # find the first value above theallignment OD
+    for count, x in enumerate(array[0:, 1]):
+        if x > allignment_OD[0]:
+            print(x)
+            lastzero = count -1
+            break
     newOD = array[lastzero + 1:, ]
     log_array = np.log(newOD[:, 1])
     log_array = np.insert(log_array, [0] * (lastzero + 1), np.nan, axis=None)
