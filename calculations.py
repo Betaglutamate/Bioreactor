@@ -38,8 +38,7 @@ def pandas_array(array, allignment_OD):
     array[0:, 1] = np.subtract(array[0:, 1], baseline)
     # find the first value above theallignment OD
     for count, x in enumerate(array[0:, 1]):
-        if x > allignment_OD[0]:
-            print(x)
+        if x > 0.02:
             lastzero = count -1
             break
     newOD = array[lastzero + 1:, ]
