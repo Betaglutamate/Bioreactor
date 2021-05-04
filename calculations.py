@@ -95,9 +95,9 @@ def calculate_growthrate(
         finaltime_list = []
         # this loop checks that the growth rate is +ve if growth rate turns
         # negative over two measurements it is terminated
-        for i in range(0, len(current_reactor_growthrate['OD']) - 2):
+        for i in range(0, len(current_reactor_growthrate['OD']) - 3):
             if current_reactor_growthrate['OD'].values[i +
-                                                       2] <= current_reactor_growthrate['OD'].values[i]:
+                                                       3] <= current_reactor_growthrate['OD'].values[i]:
                 finaltime_list.append(i)
         if len(finaltime_list) != 0:
             finaltime = np.min(finaltime_list)

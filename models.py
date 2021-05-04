@@ -8,7 +8,7 @@ class Bioreactor:
 
     '''The entire bioreactor with associated data.'''
     
-    allignment_od = [0.1, 0.4]
+    allignment_od = [0.05, 0.2]
 
     def __init__(self, reactorname, directory, data=None):
         self.reactorname = reactorname
@@ -27,7 +27,7 @@ class Bioreactor:
         time_column = 0
         reactorA_column = 49
         reactorB_column = 50
-        reactorC_column = 51
+        reactorC_column = False
         reactorD_column = 52
         time_in_min = (self.data[1:, time_column] * 60).reshape(-1, 1)
         subreactors = []
